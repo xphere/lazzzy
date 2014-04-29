@@ -1,0 +1,14 @@
+{
+    "name": "xphere/lazzzy",
+    "description": "Lazy collections for PHP",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Berny Cantos",
+            "email": "be@rny.cc"
+        }
+    ],
+    "require": {
+        "php": ">=5.4"
+    }
+}
