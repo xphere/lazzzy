@@ -15,5 +15,13 @@
     },
     "require": {
         "php": ">=5.4"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Lazzzy\\Tests\\": "tests/"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": ">=3.7"
     }
 }
