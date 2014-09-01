@@ -1,16 +1,35 @@
 <?php
 
+/*
+ * This file is part of the Berny\Lazzzy project
+ *
+ * (c) Berny Cantos <be@rny.cc>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Lazzzy;
 
-final class Lazzzy
+use Traversable;
+
+class Container implements \IteratorAggregate
 {
+    private $traversable;
+
     /**
      * Wraps iterable into a suitable iterator
      *
-     * iterator(iterable) -> iterator
+     * iterator(iterable) -> container
      */
     static public function iterator($iterable)
     {
+        return new static(self::fromIterable($iterable));
+    }
+
+    public function getIterator()
+    {
+        return $this->traversable;
     }
 
     /**
@@ -19,7 +38,7 @@ final class Lazzzy
      *
      * map(['this', 'is', 'sparta'], 'strrev') -> ['siht', 'si', 'atraps']
      */
-    static public function map($iterable, $call)
+    public function map(Callable $call)
     {
     }
 
@@ -29,7 +48,7 @@ final class Lazzzy
      *
      * each([$a, $b, $c], function($o) { $o->save(); }) -> void
      */
-    static public function each($iterable, Callable $call)
+    public function each(Callable $call)
     {
     }
 
@@ -39,7 +58,7 @@ final class Lazzzy
      *
      * filter([1, '2', 3, null], 'is_int') -> [1, 3]
      */
-    static public function filter($iterable, $predicate)
+    public function filter(Callable $predicate)
     {
     }
 
@@ -49,7 +68,7 @@ final class Lazzzy
      *
      * head([1, 2, 3]) -> 1
      */
-    static public function head($iterable)
+    public function head()
     {
     }
 
@@ -59,7 +78,7 @@ final class Lazzzy
      *
      * take([1, 2, 3, 4], 2) -> [1, 2]
      */
-    static public function take($iterable, $count)
+    public function take($count)
     {
     }
 
@@ -69,7 +88,7 @@ final class Lazzzy
      *
      * takeWhile([1, 2, 3, 4], function($i) { return $i < 3; }) -> [1, 2]
      */
-    static public function takeWhile($iterable, $predicate)
+    public function takeWhile(Callable $predicate)
     {
     }
 
@@ -79,7 +98,7 @@ final class Lazzzy
      *
      * skip([1, 2, 3, 4, 5], 2) -> [3, 4, 5]
      */
-    static public function skip($iterable, $count)
+    public function skip($count)
     {
     }
 
@@ -89,7 +108,7 @@ final class Lazzzy
      *
      * skipUntil([1, 2, 3, 4, 5], function($i) { return $i > 3; }) -> [4, 5]
      */
-    static public function skipUntil($iterable, $predicate)
+    public function skipUntil(Callable $predicate)
     {
     }
 
@@ -99,7 +118,7 @@ final class Lazzzy
      *
      * fold([1, 2, 3], '+', 10) -> 16
      */
-    static public function fold($iterable, $callback, $initial = null)
+    public function fold(Callable $callback, $initial = null)
     {
     }
 
@@ -109,7 +128,7 @@ final class Lazzzy
      *
      * foldr(['a', 'b', 'c'], '.') -> 'cba'
      */
-    static public function foldr($iterable, $callback, $initial = null)
+    public function foldr(Callable $callback, $initial = null)
     {
     }
 
@@ -119,7 +138,7 @@ final class Lazzzy
      *
      * find([7, 2, 9, 3], function($i) { return $i > 8; }) -> 9
      */
-    static public function find($iterable, $predicate)
+    public function find(Callable $predicate)
     {
     }
 
@@ -129,7 +148,7 @@ final class Lazzzy
      *
      * every(['a', 'b', 'c'], function($s) { return strlen($s) === 1; }) -> true
      */
-    static public function every($iterable, $predicate)
+    public function every(Callable $predicate)
     {
     }
 
@@ -139,7 +158,7 @@ final class Lazzzy
      *
      * any(['a', 'b', 'c'], function($s) { return strlen($s) === 2; }) -> false
      */
-    static public function any($iterable, $predicate)
+    public function any(Callable $predicate)
     {
     }
 
@@ -147,7 +166,25 @@ final class Lazzzy
      * How many items are there?
      * - Not lazy, throws on infinite sequences
      */
-    static public function size($iterable)
+    public function size()
     {
+    }
+
+    private function __construct(\Traversable $traversable)
+    {
+        $this->traversable = $traversable;
+    }
+
+    static private function fromIterable($iterable)
+    {
+        if ($iterable instanceof \Traversable) {
+            return $iterable;
+        }
+
+        if (is_array($iterable) && (count($iterable) !== 2 || !is_callable($iterable))) {
+            return new \ArrayIterator($iterable);
+        }
+
+        throw new \UnexpectedValueException('Can\'t extract an iterator');
     }
 }
