@@ -15,7 +15,8 @@ use Traversable;
 
 class Container implements \IteratorAggregate
 {
-    private $traversable;
+    /** @var \Iterator */
+    private $iterator;
 
     /**
      * Wraps iterable into a suitable iterator
@@ -29,7 +30,7 @@ class Container implements \IteratorAggregate
 
     public function getIterator()
     {
-        return $this->traversable;
+        return $this->iterator;
     }
 
     /**
@@ -170,15 +171,25 @@ class Container implements \IteratorAggregate
     {
     }
 
-    private function __construct(\Traversable $traversable)
+    private function __construct(\Traversable $iterator)
     {
-        $this->traversable = $traversable;
+        $this->iterator = $iterator;
     }
 
+    /**
+     * @param $iterable
+     *
+     * @return \Iterator
+     * @throws \UnexpectedValueException
+     */
     static private function fromIterable($iterable)
     {
-        if ($iterable instanceof \Traversable) {
+        if ($iterable instanceof \Iterator) {
             return $iterable;
+        }
+
+        if ($iterable instanceof \Traversable) {
+            return new \IteratorIterator($iterable);
         }
 
         if (is_array($iterable) && (count($iterable) !== 2 || !is_callable($iterable))) {
