@@ -83,6 +83,7 @@ class Container implements \IteratorAggregate
      */
     public function take($count)
     {
+        return new static(new Iterator\TakeIterator($this->iterator, $count));
     }
 
     /**
