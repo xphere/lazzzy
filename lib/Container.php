@@ -41,6 +41,7 @@ class Container implements \IteratorAggregate
      */
     public function map(Callable $call)
     {
+        return new static(new Iterator\MapIterator($this->iterator, $call));
     }
 
     /**
