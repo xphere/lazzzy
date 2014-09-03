@@ -22,4 +22,18 @@ class ContainerTest extends TestCase
 
         $this->assertInstanceOf('Lazzzy\Container', $container);
     }
+
+    public function test_each()
+    {
+        $actual = [];
+        $callback = function ($item) use (&$actual) {
+            $actual[] = $item;
+        };
+
+        $expected = [1, 2, 3, 4];
+        $container = Container::from($expected);
+        $container->each($callback);
+
+        $this->assertEquals($expected, $actual);
+    }
 }

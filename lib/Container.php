@@ -52,6 +52,10 @@ class Container implements \IteratorAggregate
      */
     public function each(Callable $call)
     {
+        // TODO: Throw on infinite sequence
+        foreach ($this as $item) {
+            $call($item);
+        }
     }
 
     /**
