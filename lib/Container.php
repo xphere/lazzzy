@@ -62,6 +62,7 @@ class Container implements \IteratorAggregate
      */
     public function filter(Callable $predicate)
     {
+        return new static(new Iterator\FilterIterator($this->iterator, $predicate));
     }
 
     /**
