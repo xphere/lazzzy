@@ -94,6 +94,7 @@ class Container implements \IteratorAggregate
      */
     public function takeWhile(Callable $predicate)
     {
+        return new static(new Iterator\TakeWhileIterator($this->iterator, $predicate));
     }
 
     /**
