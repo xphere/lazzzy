@@ -78,16 +78,10 @@ class MapIteratorTest extends TestCase
 
     public function test_is_lazy()
     {
-        $iterable = $this->getMock('\Iterator');
-        $iterable->expects($this->never())->method('current');
-        $iterable->expects($this->never())->method('next');
-        $iterable->expects($this->never())->method('key');
-        $iterable->expects($this->never())->method('valid');
-        $iterable->expects($this->never())->method('rewind');
-
+        $iterable = $this->mockLazyIterator();
+        // Even the callback should not be called
         $callback = array($iterable, 'valid');
 
-        /** @var \Iterator $iterable */
         new MapIterator($iterable, $callback);
     }
 }

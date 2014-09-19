@@ -75,15 +75,7 @@ class TakeIteratorTest extends TestCase
 
     public function test_is_lazy()
     {
-        $iterable = $this->getMock('\Iterator');
-        $iterable->expects($this->never())->method('current');
-        $iterable->expects($this->never())->method('next');
-        $iterable->expects($this->never())->method('key');
-        $iterable->expects($this->never())->method('valid');
-        $iterable->expects($this->never())->method('rewind');
-
-        /** @var \Iterator $iterable */
-        new TakeIterator($iterable, 1);
+        new TakeIterator($this->mockLazyIterator(), 1);
     }
 
     public function test_keeps_keys()
