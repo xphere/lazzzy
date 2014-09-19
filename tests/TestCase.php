@@ -14,6 +14,24 @@ namespace Lazzzy\Tests;
 abstract class TestCase extends \PHPUnit_Framework_TestCase
 {
     /**
+     * Provides all valid iterator classes
+     *
+     * @return array
+     */
+    public function provider_all_iterators()
+    {
+        $empty = new \EmptyIterator();
+        $array = new \ArrayIterator();
+        $infinite = new \InfiniteIterator($empty);
+
+        return [
+            'empty' => [ $empty ],
+            'array' => [ $array ],
+            'infinite' => [ $infinite ],
+        ];
+    }
+
+    /**
      * Get an iterator whose functions should never be called
      * For testing purposes on lazy iterators
      *

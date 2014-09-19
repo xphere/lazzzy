@@ -17,7 +17,7 @@ use Lazzzy\Tests\TestCase;
 class MapIteratorTest extends TestCase
 {
     /**
-     * @dataProvider provider_valid_iterator
+     * @dataProvider provider_all_iterators
      */
     public function test_create_with_valid_iterator(\Iterator $iterator)
     {
@@ -25,19 +25,6 @@ class MapIteratorTest extends TestCase
         $map = new MapIterator($iterator, $callback);
 
         $this->assertNotNull($map);
-    }
-
-    public function provider_valid_iterator()
-    {
-        $empty = new \EmptyIterator();
-        $array = new \ArrayIterator();
-        $infinite = new \InfiniteIterator($empty);
-
-        return [
-            'empty' => [ $empty ],
-            'array' => [ $array ],
-            'infinite' => [ $infinite ],
-        ];
     }
 
     /**

@@ -17,7 +17,7 @@ use Lazzzy\Tests\TestCase;
 class FilterIteratorTest extends TestCase
 {
     /**
-     * @dataProvider provider_valid_iterator
+     * @dataProvider provider_all_iterators
      */
     public function test_create_with_valid_iterator(\Iterator $iterator)
     {
@@ -25,19 +25,6 @@ class FilterIteratorTest extends TestCase
         $filtered = new FilterIterator($iterator, $callable);
 
         $this->assertNotNull($filtered);
-    }
-
-    public function provider_valid_iterator()
-    {
-        $empty = new \EmptyIterator();
-        $array = new \ArrayIterator();
-        $infinite = new \InfiniteIterator($empty);
-
-        return [
-            'empty' => [ $empty ],
-            'array' => [ $array ],
-            'infinite' => [ $infinite ],
-        ];
     }
 
     /**
