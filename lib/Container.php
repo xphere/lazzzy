@@ -179,6 +179,11 @@ class Container implements \IteratorAggregate
     {
     }
 
+    public function windowed($windowSize)
+    {
+        return new static(new Iterator\WindowIterator($this->iterator, $windowSize));
+    }
+
     private function __construct(\Traversable $iterator)
     {
         $this->iterator = $iterator;
