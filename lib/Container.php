@@ -23,7 +23,7 @@ class Container implements \IteratorAggregate
      *
      * iterator(iterable) -> container
      */
-    static public function iterator($iterable)
+    static public function from($iterable)
     {
         return new static(self::fromIterable($iterable));
     }
