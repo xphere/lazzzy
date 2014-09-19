@@ -32,6 +32,16 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Get a mock iterator for testing purposes
+     *
+     * @return \Iterator|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected function mockIterator()
+    {
+        return $this->getMock('\Iterator');
+    }
+
+    /**
      * Get an iterator whose functions should never be called
      * For testing purposes on lazy iterators
      *
@@ -39,7 +49,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
      */
     protected function mockLazyIterator()
     {
-        $iterable = $this->getMock('\Iterator');
+        $iterable = $this->mockIterator();
         $iterable->expects($this->never())->method('current');
         $iterable->expects($this->never())->method('next');
         $iterable->expects($this->never())->method('key');

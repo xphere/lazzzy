@@ -31,7 +31,7 @@ class TakeIteratorTest extends TestCase
      */
     public function test_throw_on_zero_items_taken()
     {
-        $iterable = $this->getMock('\Iterator');
+        $iterable = $this->mockIterator();
         new TakeIterator($iterable, 0);
     }
 
