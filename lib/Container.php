@@ -28,6 +28,11 @@ class Container implements \IteratorAggregate
         return new static(self::fromIterable($iterable));
     }
 
+    /**
+     * Honors `\IteratorAggregate` interface so you can `foreach` over `Container`s
+     *
+     * @return \Iterator
+     */
     public function getIterator()
     {
         return $this->iterator;
