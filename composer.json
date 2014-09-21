@@ -1,6 +1,7 @@
 {
     "name": "xphere/lazzzy",
     "description": "Lazy collections for PHP",
+    "keywords": ["lazy", "collection", "functional", "iterator"],
     "license": "MIT",
     "authors": [
         {
@@ -8,6 +9,10 @@
             "email": "be@rny.cc"
         }
     ],
+    "type": "library",
+    "homepage": "http://github.com/xPheRe/Lazzzy",
+    "version": "0.1",
+    "minimum-stability": "dev",
     "autoload": {
         "psr-4": {
             "Lazzzy\\": "lib/"
