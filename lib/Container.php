@@ -33,6 +33,16 @@ class Container implements \IteratorAggregate
         return $this->iterator;
     }
 
+    public function toArray()
+    {
+        return iterator_to_array($this->iterator, false);
+    }
+
+    public function toAssoc()
+    {
+        return iterator_to_array($this->iterator, true);
+    }
+
     /**
      * Map iterable through a transformation function
      * + Lazy evaluation

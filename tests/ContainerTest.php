@@ -36,4 +36,25 @@ class ContainerTest extends TestCase
 
         $this->assertEquals($expected, $actual);
     }
+
+    public function test_to_assoc_mantains_keys()
+    {
+        $expected = [3 => 'a', 'z' => 'b', 1 => 'c'];
+        $container = Container::from($expected);
+
+        $actual = $container->toAssoc();
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function test_to_array_removes_keys()
+    {
+        $values = [3 => 'a', 'z' => 'b', 1 => 'c'];
+        $expected = ['a', 'b', 'c'];
+        $container = Container::from($values);
+
+        $actual = $container->toArray();
+
+        $this->assertEquals($expected, $actual);
+    }
 }
