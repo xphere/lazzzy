@@ -58,4 +58,29 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
 
         return $iterable;
     }
+
+    /**
+     * Take a number of items from an iterator (even infinite ones)
+     *
+     * @param \Iterator $iterator  Iterator to extract items
+     * @param integer   $itemCount Number of items
+     *
+     * @return array
+     */
+    protected function takeItems(\Iterator $iterator, $itemCount)
+    {
+        $result = [];
+        foreach ($iterator as $key => $value) {
+            if (null === $key) {
+                $result[] = $value;
+            } else {
+                $result[$key] = $value;
+            }
+            if (--$itemCount === 0) {
+                break;
+            }
+        }
+
+        return $result;
+    }
 }

@@ -219,6 +219,10 @@ class Container implements \IteratorAggregate
             return new \ArrayIterator($iterable);
         }
 
+        if (is_callable($iterable)) {
+            return new Iterator\CallableIterator($iterable);
+        }
+
         throw new \UnexpectedValueException('Can\'t extract an iterator');
     }
 }
