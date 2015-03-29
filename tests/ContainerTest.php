@@ -15,12 +15,18 @@ use Lazzzy\Container;
 
 class ContainerTest extends TestCase
 {
-    public function test_static_creation()
+    /**
+     * @dataProvider provider_iteration_sources
+     */
+    public function test_can_generate_from_source_and_iterate($source)
     {
-        $iterator = $this->mockIterator();
-        $container = Container::from($iterator);
+        $container = Container::from($source);
 
         $this->assertInstanceOf('Lazzzy\Container', $container);
+
+        foreach ($container as $value) {
+            break;
+        }
     }
 
     public function test_each()

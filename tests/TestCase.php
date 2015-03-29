@@ -32,6 +32,30 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Provides all supported iteration sources
+     *
+     * @return array
+     */
+    public function provider_iteration_sources()
+    {
+        $aggregate = $this->mockAggregate();
+
+        $aggregate
+            ->expects($this->atLeastOnce())
+            ->method('getIterator')
+            ->will($this->returnValue($this->mockIterator()));
+
+        return [
+            'empty array'   => [ [], ],
+            'array'         => [ [1, 2, 3, 4], ],
+            'iterator'      => [ $this->mockIterator(), ],
+            'aggregate'     => [ $aggregate, ],
+            'function'      => [ function () { return 1; }, ],
+            'generator'     => [ function () { for ($i = 0; $i < 10; ++$i) { yield $i; } }, ],
+        ];
+    }
+
+    /**
      * Get a mock iterator for testing purposes
      *
      * @return \Iterator|\PHPUnit_Framework_MockObject_MockObject
@@ -39,6 +63,16 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     protected function mockIterator()
     {
         return $this->getMock('\Iterator');
+    }
+
+    /**
+     * Get a mock traversable for testing purposes
+     *
+     * @return \IteratorAggregate|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected function mockAggregate()
+    {
+        return $this->getMock('\IteratorAggregate');
     }
 
     /**
