@@ -182,6 +182,15 @@ class Container implements \IteratorAggregate
     }
 
     /**
+     * Caches each execution of an iterator to allow rewind
+     * - Lazy, handles infinite sequences (bounded by memory)
+     */
+    public function rewindable()
+    {
+        return new static(new Iterator\RewindableIterator($this->iterator));
+    }
+
+    /**
      * How many items are there?
      * - Not lazy, throws on infinite sequences
      */
