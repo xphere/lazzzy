@@ -139,6 +139,24 @@ class Container implements \IteratorAggregate
      */
     public function fold(Callable $callback, $initial = null)
     {
+        if (func_num_args() > 1) {
+            $accumulator = $initial;
+        }
+
+        // TODO: Throw on infinite sequence
+        foreach ($this->iterator as $item) {
+            $accumulator = isset($accumulator)
+                ? $callback($item, $accumulator)
+                : $item;
+        }
+
+        if (!isset($accumulator)) {
+            throw new \UnexpectedValueException(
+                'Reducing empty collection without initial value'
+            );
+        }
+
+        return $accumulator;
     }
 
     /**

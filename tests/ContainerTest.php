@@ -63,4 +63,50 @@ class ContainerTest extends TestCase
 
         $this->assertEquals($expected, $actual);
     }
+
+    public function test_fold_with_initial_value()
+    {
+        $data = range(0, 9);
+        $container = Container::from($data);
+
+        $actual = $container->fold(function ($acc, $value) { return $acc + $value; }, 10);
+
+        $this->assertEquals(55, $actual);
+    }
+
+    public function test_fold_with_no_initial_value()
+    {
+        $data = [5, 9, 2, 7, 1, 3, 8, 6, 4];
+        $container = Container::from($data);
+
+        $actual = $container->fold('min');
+
+        $this->assertEquals(1, $actual);
+    }
+
+    /**
+     * @expectedException \UnexpectedValueException
+     */
+    public function test_fold_with_no_initial_value_needs_at_least_one_element()
+    {
+        $container = Container::from([]);
+        $container->fold('max');
+    }
+
+    public function test_folding_empty_container_returns_initial_value_and_never_calls()
+    {
+        $container = Container::from([]);
+        $initialValue = new \StdClass();
+
+        $callback = function () {
+
+            throw new \UnexpectedValueException(
+                'This callback must not be called'
+            );
+        };
+
+        $actual = $container->fold($callback, $initialValue);
+
+        $this->assertSame($initialValue, $actual);
+    }
 }
