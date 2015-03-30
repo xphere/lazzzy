@@ -28,16 +28,6 @@ class WindowIterator extends \IteratorIterator
         parent::__construct($traversable);
     }
 
-    public function key()
-    {
-        return $this->iteration;
-    }
-
-    public function current()
-    {
-        return $this->window;
-    }
-
     public function rewind()
     {
         parent::rewind();
@@ -47,6 +37,16 @@ class WindowIterator extends \IteratorIterator
         if (parent::valid()) {
             $this->advanceWindow();
         }
+    }
+
+    public function current()
+    {
+        return $this->window;
+    }
+
+    public function key()
+    {
+        return $this->iteration;
     }
 
     public function next()
