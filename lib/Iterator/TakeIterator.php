@@ -1,7 +1,7 @@
 <?php
 
 /*
- *  This file is part of the Berny\Lazzzy project
+ *  This file is part of the xphere\lazzzy project
  *
  * (c) Berny Cantos <be@rny.cc>
  *
@@ -13,8 +13,21 @@ namespace Lazzzy\Iterator;
 
 use LimitIterator;
 
+/**
+ * Class TakeIterator
+ *
+ * Iterate over a limited subset of items in an iterator
+ *
+ * @author Berny Cantos <be@rny.cc>
+ */
 class TakeIterator extends LimitIterator
 {
+    /**
+     * Construct
+     *
+     * @param \Iterator $iterator
+     * @param integer   $count
+     */
     public function __construct(\Iterator $iterator, $count)
     {
         // Taking 0 or less items is not allowed, use an empty iterator instead

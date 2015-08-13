@@ -9,16 +9,15 @@
  * file that was distributed with this source code.
  */
 
-namespace Lazzzy\Iterator;
+namespace Lazzzy\Exception;
 
 /**
- * Class FilterIterator
+ * Class UnsupportedIterable
  *
- * Filters an iterator with a callback
- * Uses SPL `CallbackFilterIterator`
+ * Thrown when an iterable can't be converted to an iterator
  *
  * @author Berny Cantos <be@rny.cc>
  */
-class FilterIterator extends \CallbackFilterIterator
+class UnsupportedIterable extends \RuntimeException implements Exception
 {
 }

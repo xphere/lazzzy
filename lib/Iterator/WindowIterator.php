@@ -1,7 +1,7 @@
 <?php
 
 /*
- *  This file is part of the Berny\Lazzzy project
+ *  This file is part of the xphere\lazzzy project
  *
  * (c) Berny Cantos <be@rny.cc>
  *
@@ -11,12 +11,42 @@
 
 namespace Lazzzy\Iterator;
 
+/**
+ * Class WindowIterator
+ *
+ * Works with a slider window of fixed size collecting elements from an iterable
+ *
+ * @author Berny Cantos <be@rny.cc>
+ */
 class WindowIterator extends \IteratorIterator
 {
+    /**
+     * Size of the window
+     *
+     * @var integer
+     */
     private $windowSize;
-    private $window = [];
-    private $iteration = 0;
 
+    /**
+     * Elements collected in the window
+     *
+     * @var array
+     */
+    private $window = [];
+
+    /**
+     * Number of iterations
+     *
+     * @var int
+     */
+    private $count = 0;
+
+    /**
+     * Construct
+     *
+     * @param \Traversable $traversable
+     * @param integer      $windowSize
+     */
     public function __construct(\Traversable $traversable, $windowSize)
     {
         // A window of size 0 or less is not allowed
@@ -28,40 +58,61 @@ class WindowIterator extends \IteratorIterator
         parent::__construct($traversable);
     }
 
+    /**
+     * Rewind iteration
+     */
     public function rewind()
     {
         parent::rewind();
 
-        $this->iteration = 0;
+        $this->count = 0;
         $this->window = [];
         if (parent::valid()) {
             $this->advanceWindow();
         }
     }
 
+    /**
+     * Get current element
+     *
+     * @return array
+     */
     public function current()
     {
         return $this->window;
     }
 
+    /**
+     * Get current key
+     *
+     * @return int
+     */
     public function key()
     {
-        return $this->iteration;
+        return $this->count;
     }
 
+    /**
+     * Move to next element
+     */
     public function next()
     {
         parent::next();
 
-        ++$this->iteration;
+        ++$this->count;
         if (parent::valid()) {
             $this->advanceWindow();
         }
     }
 
+    /**
+     * Advances iterator, saving elements into the window
+     * Keeps keys from iterable and removes first item if window grows too large
+     */
     protected function advanceWindow()
     {
-        $this->window[\IteratorIterator::key()] = \IteratorIterator::current();
+        $this->window[parent::key()] = parent::current();
+
         if (count($this->window) > $this->windowSize) {
             array_shift($this->window);
         }

@@ -9,16 +9,15 @@
  * file that was distributed with this source code.
  */
 
-namespace Lazzzy\Iterator;
+namespace Lazzzy\Exception;
 
 /**
- * Class FilterIterator
+ * Class NotImplemented
  *
- * Filters an iterator with a callback
- * Uses SPL `CallbackFilterIterator`
+ * Thrown when a method is not implemented
  *
  * @author Berny Cantos <be@rny.cc>
  */
-class FilterIterator extends \CallbackFilterIterator
+class NotImplemented extends \RuntimeException implements Exception
 {
 }

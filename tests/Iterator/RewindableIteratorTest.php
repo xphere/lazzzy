@@ -1,6 +1,6 @@
 <?php
 
-/* This file is part of the Berny\Lazzzy test suite
+/* This file is part of the xphere\lazzzy test suite
  *
  * (c) Berny Cantos <be@rny.cc>
  *

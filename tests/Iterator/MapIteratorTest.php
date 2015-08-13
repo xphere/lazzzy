@@ -1,7 +1,7 @@
 <?php
 
 /*
- *  This file is part of the Berny\Lazzzy test suite
+ *  This file is part of the xphere\lazzzy test suite
  *
  * (c) Berny Cantos <be@rny.cc>
  *
@@ -30,7 +30,7 @@ class MapIteratorTest extends TestCase
     /**
      * @dataProvider provider_mapping
      */
-    public function test_calls_mapping_function_on_iteration($iterator, Callable $callback, array $expected)
+    public function test_calls_mapping_function_on_iteration($iterator, callable $callback, array $expected)
     {
         $map = new MapIterator($iterator, $callback);
         $actual = iterator_to_array($map);

@@ -1,7 +1,7 @@
 <?php
 
 /*
- *  This file is part of the Berny\Lazzzy project
+ *  This file is part of the xphere\lazzzy project
  *
  * (c) Berny Cantos <be@rny.cc>
  *
@@ -13,17 +13,36 @@ namespace Lazzzy\Iterator;
 
 use IteratorIterator;
 
+/**
+ * Class MapIterator
+ *
+ * Run a callable in every item on iteration
+ *
+ * @author Berny Cantos <be@rny.cc>
+ */
 class MapIterator extends IteratorIterator
 {
+    /** @var callable */
     private $callback;
 
-    public function __construct(\Traversable $traversable, Callable $callback)
+    /**
+     * Construct
+     *
+     * @param \Traversable $traversable
+     * @param callable     $callback
+     */
+    public function __construct(\Traversable $traversable, callable $callback)
     {
         parent::__construct($traversable);
 
         $this->callback = $callback;
     }
 
+    /**
+     * Get current element
+     *
+     * @return mixed
+     */
     public function current()
     {
         $callback = $this->callback;

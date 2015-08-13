@@ -9,16 +9,15 @@
  * file that was distributed with this source code.
  */
 
-namespace Lazzzy\Iterator;
+namespace Lazzzy\Exception;
 
 /**
- * Class FilterIterator
+ * Interface Exception
  *
- * Filters an iterator with a callback
- * Uses SPL `CallbackFilterIterator`
+ * Marker for exceptions related to the library
  *
  * @author Berny Cantos <be@rny.cc>
  */
-class FilterIterator extends \CallbackFilterIterator
+interface Exception
 {
 }

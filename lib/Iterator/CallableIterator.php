@@ -1,7 +1,7 @@
 <?php
 
 /*
- *  This file is part of the Berny\Lazzzy project
+ *  This file is part of the xphere\lazzzy project
  *
  * (c) Berny Cantos <be@rny.cc>
  *
@@ -13,28 +13,53 @@ namespace Lazzzy\Iterator;
 
 use Iterator;
 
+/**
+ * Class CallableIterator
+ *
+ * Runs a callable in each iteration
+ * Supports PHP 5.5 generators
+ *
+ * @author Berny Cantos <be@rny.cc>
+ */
 class CallableIterator implements Iterator
 {
-    /**
-     * @var \Generator|null|false
-     */
-    private $generator;
-
     /**
      * @var callable
      */
     private $callable;
 
     /**
+     * Holds a possible generator resulting from callable
+     *
+     * If `false`, callable didn't return a generator, and allows for optimizations
+     * If `null`, callable has not been called yet
+     *
+     * @var \Generator|null|false
+     */
+    private $generator;
+
+    /**
      * @var integer index
      */
     private $index;
 
-    public function __construct(Callable $callable)
+    /**
+     * Construct
+     *
+     * @param callable $callable
+     */
+    public function __construct(callable $callable)
     {
         $this->callable = $callable;
     }
 
+    /**
+     * Callables and generators can't be rewound
+     *
+     * Allows a first call to `rewind` for `foreach` purposes
+     *
+     * @throws \Exception
+     */
     public function rewind()
     {
         if ($this->index !== null) {
@@ -46,11 +71,23 @@ class CallableIterator implements Iterator
         $this->index = 0;
     }
 
+    /**
+     * For a callable, it's always valid to iterate
+     *
+     * @return bool
+     */
     public function valid()
     {
         return $this->generator ? $this->generator->valid() : true;
     }
 
+    /**
+     * Get current element
+     *
+     * Takes into account if the callback returns a Generator
+     *
+     * @return mixed
+     */
     public function current()
     {
         if ($this->generator) {
@@ -71,11 +108,19 @@ class CallableIterator implements Iterator
         return $result;
     }
 
+    /**
+     * Get current key
+     *
+     * @return mixed
+     */
     public function key()
     {
         return $this->generator ? $this->generator->key() : $this->index++;
     }
 
+    /**
+     * Get next item
+     */
     public function next()
     {
         if ($this->generator) {
