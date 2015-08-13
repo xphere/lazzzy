@@ -11,7 +11,7 @@
     ],
     "type": "library",
     "homepage": "http://github.com/xPheRe/Lazzzy",
-    "version": "0.1",
+    "version": "0.2",
     "minimum-stability": "dev",
     "autoload": {
         "psr-4": {
