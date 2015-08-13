@@ -29,6 +29,17 @@ class ContainerTest extends TestCase
         }
     }
 
+    public function test_can_generate_from_multiple_iterators()
+    {
+        $expected = [ 1, 2, 3, 2, 3, 4 ];
+        $left = [ 1, 2, 3 ];
+        $right = [ 2, 3, 4 ];
+
+        $container = Container::from($left, $right);
+
+        $this->assertEquals($expected, $container->toArray());
+    }
+
     public function test_each()
     {
         $actual = [];

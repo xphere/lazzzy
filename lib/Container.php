@@ -13,6 +13,7 @@ namespace Lazzzy;
 
 use Traversable;
 
+use Lazzzy\Iterator\CompositeIterator;
 use Lazzzy\Exception;
 
 /**
@@ -28,10 +29,18 @@ class Container implements \IteratorAggregate
     /**
      * Wraps iterable into a container
      *
+     * Allows for multiple iterables
+     *
      * @return self
      */
-    static public function from($iterable)
+    static public function from($iterable/*, $iterable...*/)
     {
+        if (func_num_args() > 1) {
+            $iterable = new CompositeIterator(
+                array_map(['self', 'fromIterable'], func_get_args())
+            );
+        }
+
         return new static(self::fromIterable($iterable));
     }
 
