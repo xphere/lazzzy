@@ -11,7 +11,7 @@
 
 namespace Lazzzy\Tests\Iterator;
 
-use Lazzzy\Iterator\WindowIterator;
+use Lazzzy\Iterator\Window;
 use Lazzzy\Tests\TestCase;
 
 class WindowIteratorTest extends TestCase
@@ -21,7 +21,7 @@ class WindowIteratorTest extends TestCase
      */
     public function test_create_with_valid_iterator(\Iterator $iterator)
     {
-        $windowed = new WindowIterator($iterator, 1);
+        $windowed = new Window($iterator, 1);
 
         $this->assertNotNull($windowed);
     }
@@ -32,7 +32,7 @@ class WindowIteratorTest extends TestCase
     public function test_throw_on_zero_items_taken()
     {
         $iterable = $this->mockIterator();
-        new WindowIterator($iterable, 0);
+        new Window($iterable, 0);
     }
 
     /**
@@ -40,7 +40,7 @@ class WindowIteratorTest extends TestCase
      */
     public function test_iteration(\Iterator $iterable, $count, array $expected)
     {
-        $iterator = new WindowIterator($iterable, $count);
+        $iterator = new Window($iterable, $count);
         $actual = iterator_to_array($iterator, false);
 
         $this->assertSame($expected, $actual);
@@ -60,7 +60,7 @@ class WindowIteratorTest extends TestCase
 
     public function test_is_lazy()
     {
-        new WindowIterator($this->mockLazyIterator(), 1);
+        new Window($this->mockLazyIterator(), 1);
     }
 
     public function test_keeps_keys_internally()
@@ -73,7 +73,7 @@ class WindowIteratorTest extends TestCase
             ['second' => 10, 'last' => 20],
         ];
 
-        $iterator = new WindowIterator($iterable, 2);
+        $iterator = new Window($iterable, 2);
         $actual = iterator_to_array($iterator);
 
         $this->assertEquals($expected, $actual);

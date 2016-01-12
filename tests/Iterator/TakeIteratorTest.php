@@ -11,7 +11,7 @@
 
 namespace Lazzzy\Tests\Iterator;
 
-use Lazzzy\Iterator\TakeIterator;
+use Lazzzy\Iterator\Take;
 use Lazzzy\Tests\TestCase;
 
 class TakeIteratorTest extends TestCase
@@ -21,7 +21,7 @@ class TakeIteratorTest extends TestCase
      */
     public function test_create_with_valid_iterator(\Iterator $iterator)
     {
-        $taken = new TakeIterator($iterator, 1);
+        $taken = new Take($iterator, 1);
 
         $this->assertNotNull($taken);
     }
@@ -32,7 +32,7 @@ class TakeIteratorTest extends TestCase
     public function test_throw_on_zero_items_taken()
     {
         $iterable = $this->mockIterator();
-        new TakeIterator($iterable, 0);
+        new Take($iterable, 0);
     }
 
     /**
@@ -40,7 +40,7 @@ class TakeIteratorTest extends TestCase
      */
     public function test_iteration(\Iterator $iterable, $count, array $expected)
     {
-        $iterator = new TakeIterator($iterable, $count);
+        $iterator = new Take($iterable, $count);
         $actual = iterator_to_array($iterator, false);
 
         $this->assertSame($expected, $actual);
@@ -62,7 +62,7 @@ class TakeIteratorTest extends TestCase
 
     public function test_is_lazy()
     {
-        new TakeIterator($this->mockLazyIterator(), 1);
+        new Take($this->mockLazyIterator(), 1);
     }
 
     public function test_keeps_keys()
@@ -71,7 +71,7 @@ class TakeIteratorTest extends TestCase
         $expected = ['first' => 15, 'second' => 10];
         $iterable = new \ArrayIterator($array);
 
-        $iterator = new TakeIterator($iterable, 2);
+        $iterator = new Take($iterable, 2);
         $actual = iterator_to_array($iterator);
 
         $this->assertEquals($expected, $actual);

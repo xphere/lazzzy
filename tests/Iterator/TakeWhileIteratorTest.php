@@ -11,7 +11,7 @@
 
 namespace Lazzzy\Tests\Iterator;
 
-use Lazzzy\Iterator\TakeWhileIterator;
+use Lazzzy\Iterator\TakeWhile;
 use Lazzzy\Tests\TestCase;
 
 class TakeWhileIteratorTest extends TestCase
@@ -22,7 +22,7 @@ class TakeWhileIteratorTest extends TestCase
     public function test_create_with_valid_iterator(\Iterator $iterator)
     {
         $callback = function () { };
-        $takenWhile = new TakeWhileIterator($iterator, $callback);
+        $takenWhile = new TakeWhile($iterator, $callback);
 
         $this->assertNotNull($takenWhile);
     }
@@ -32,7 +32,7 @@ class TakeWhileIteratorTest extends TestCase
      */
     public function test_iteration(\Iterator $iterable, $callback, array $expected)
     {
-        $iterator = new TakeWhileIterator($iterable, $callback);
+        $iterator = new TakeWhile($iterable, $callback);
         $actual = iterator_to_array($iterator, false);
 
         $this->assertSame($expected, $actual);
@@ -66,7 +66,7 @@ class TakeWhileIteratorTest extends TestCase
         // Even the filter should not be called
         $filter = array($iterable, 'valid');
 
-        new TakeWhileIterator($iterable, $filter);
+        new TakeWhile($iterable, $filter);
     }
 
     public function test_keeps_keys()
@@ -76,7 +76,7 @@ class TakeWhileIteratorTest extends TestCase
         $callback = function ($i) { return $i < 20; };
         $iterable = new \ArrayIterator($array);
 
-        $iterator = new TakeWhileIterator($iterable, $callback);
+        $iterator = new TakeWhile($iterable, $callback);
         $actual = iterator_to_array($iterator);
 
         $this->assertEquals($expected, $actual);

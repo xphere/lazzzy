@@ -13,7 +13,6 @@ namespace Lazzzy;
 
 use Traversable;
 
-use Lazzzy\Iterator\CompositeIterator;
 use Lazzzy\Exception;
 
 /**
@@ -23,8 +22,8 @@ use Lazzzy\Exception;
  */
 class Container implements \IteratorAggregate
 {
-    /** @var \Iterator */
-    private $iterator;
+    /** @var array|\Traversable */
+    private $iterable;
 
     /**
      * Wraps iterable into a container
@@ -33,25 +32,39 @@ class Container implements \IteratorAggregate
      *
      * @return self
      */
-    static public function from($iterable/*, $iterable...*/)
+    static public function from($iterable)
     {
         if (func_num_args() > 1) {
-            $iterable = new CompositeIterator(
-                array_map(['self', 'fromIterable'], func_get_args())
-            );
+            return new static(new Iterator\Append(func_get_args()));
         }
 
-        return new static(self::fromIterable($iterable));
+        return new static($iterable);
     }
 
     /**
      * Honors `\IteratorAggregate` interface so you can `foreach` over `Container`s
      *
-     * @return \Iterator
+     * @return \Traversable
+     *
+     * @throws Exception\UnsupportedIterable
      */
     public function getIterator()
     {
-        return $this->iterator;
+/* */
+        foreach ($this->iterable as $value) {
+            yield $value;
+        }
+/*/
+        if ($this->iterable instanceof \Traversable) {
+            return $this->iterable;
+        }
+
+        if (is_array($this->iterable)) {
+            return new \ArrayIterator($this->iterable);
+        }
+
+        throw new Exception\UnsupportedIterable();
+/* */
     }
 
     /**
@@ -63,7 +76,7 @@ class Container implements \IteratorAggregate
     public function toArray()
     {
         // TODO: Throw on infinite sequence
-        return iterator_to_array($this->iterator, false);
+        return iterator_to_array($this->getIterator(), false);
     }
 
     /**
@@ -75,7 +88,7 @@ class Container implements \IteratorAggregate
     public function toAssoc()
     {
         // TODO: Throw on infinite sequence
-        return iterator_to_array($this->iterator, true);
+        return iterator_to_array($this->getIterator(), true);
     }
 
     /**
@@ -84,33 +97,13 @@ class Container implements \IteratorAggregate
      *
      * map(['this', 'is', 'sparta'], 'strrev') -> ['siht', 'si', 'atraps']
      *
-     * @param callable $call
+     * @param callable $mapping
      *
      * @return self
      */
-    public function map(callable $call)
+    public function map(callable $mapping)
     {
-        return new static(new Iterator\MapIterator($this->iterator, $call));
-    }
-
-    /**
-     * Run a function for every value
-     * - Not lazy, throws on infinite sequences
-     *
-     * each([$a, $b, $c], function($o) { $o->save(); }) -> void
-     *
-     * @param callable $call
-     *
-     * @return $this
-     */
-    public function each(callable $call)
-    {
-        // TODO: Throw on infinite sequence
-        foreach ($this as $item) {
-            $call($item);
-        }
-
-        return $this;
+        return new static(new Iterator\Map($this->iterable, $mapping));
     }
 
     /**
@@ -125,7 +118,7 @@ class Container implements \IteratorAggregate
      */
     public function filter(callable $predicate)
     {
-        return new static(new Iterator\FilterIterator($this->iterator, $predicate));
+        return new static(new Iterator\Filter($this->iterable, $predicate));
     }
 
     /**
@@ -135,11 +128,17 @@ class Container implements \IteratorAggregate
      * head([1, 2, 3]) -> 1
      *
      * @return mixed
+     *
+     * @throws Exception\NotAvailableOnEmpty
      */
     public function head()
     {
+        foreach ($this->iterable as $value) {
+            return $value;
+        }
+
         /// To be implemented
-        throw new Exception\NotImplemented();
+        throw new Exception\NotAvailableOnEmpty;
     }
 
     /**
@@ -154,7 +153,7 @@ class Container implements \IteratorAggregate
      */
     public function take($count)
     {
-        return new static(new Iterator\TakeIterator($this->iterator, $count));
+        return new static(new Iterator\Take($this->iterable, $count));
     }
 
     /**
@@ -169,7 +168,7 @@ class Container implements \IteratorAggregate
      */
     public function takeWhile(callable $predicate)
     {
-        return new static(new Iterator\TakeWhileIterator($this->iterator, $predicate));
+        return new static(new Iterator\TakeWhile($this->iterable, $predicate));
     }
 
     /**
@@ -222,14 +221,14 @@ class Container implements \IteratorAggregate
         }
 
         // TODO: Throw on infinite sequence
-        foreach ($this->iterator as $item) {
+        foreach ($this->iterable as $item) {
             $accumulator = isset($accumulator)
                 ? $callback($item, $accumulator)
                 : $item;
         }
 
         if (!isset($accumulator)) {
-            throw new \UnexpectedValueException(
+            throw new Exception\NotAvailableOnEmpty(
                 'Reducing empty collection without initial value'
             );
         }
@@ -297,8 +296,13 @@ class Container implements \IteratorAggregate
      */
     public function every(callable $predicate)
     {
-        /// To be implemented
-        throw new Exception\NotImplemented();
+        foreach ($this->iterable as $value) {
+            if (!$predicate($value)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -313,19 +317,13 @@ class Container implements \IteratorAggregate
      */
     public function any(callable $predicate)
     {
-        /// To be implemented
-        throw new Exception\NotImplemented();
-    }
+        foreach ($this->iterable as $value) {
+            if ($predicate($value)) {
+                return true;
+            }
+        }
 
-    /**
-     * Caches each execution of an iterator to allow rewind
-     * - Lazy, handles infinite sequences (bounded by memory)
-     *
-     * @return self
-     */
-    public function rewindable()
-    {
-        return new static(new Iterator\RewindableIterator($this->iterator));
+        return false;
     }
 
     /**
@@ -336,8 +334,12 @@ class Container implements \IteratorAggregate
      */
     public function size()
     {
-        /// To be implemented
-        throw new Exception\NotImplemented();
+        $count = 0;
+        foreach ($this->iterable as $unusedValue) {
+            ++$count;
+        }
+
+        return $count;
     }
 
     /**
@@ -347,13 +349,14 @@ class Container implements \IteratorAggregate
      *
      * windowed([1, 2, 3], 2) -> [[1], [1, 2], [2, 3]]
      *
-     * @param integer $windowSize
+     * @param integer $size
+     * @param bool $full
      *
-     * @return self
+     * @return Container
      */
-    public function windowed($windowSize)
+    public function windowed($size, $full = false)
     {
-        return new static(new Iterator\WindowIterator($this->iterator, $windowSize));
+        return new static(new Iterator\Window($this->iterable, $size, $full));
     }
 
     /**
@@ -363,46 +366,17 @@ class Container implements \IteratorAggregate
      */
     public function evaluate()
     {
-        return static::from($this->toAssoc());
+        return new static($this->toAssoc());
     }
 
     /**
      * Disallows creation from the outside to force the usage of `from`
      *
-     * @param Traversable $iterator
+     * @param array|\Traversable $iterable
      */
-    private function __construct(\Traversable $iterator)
+    private function __construct($iterable)
     {
-        $this->iterator = $iterator;
-    }
-
-    /**
-     * Generate an iterator from any supported iterable
-     *
-     * @param mixed $iterable
-     *
-     * @return \Iterator
-     *
-     * @throws Exception\UnsupportedIterable
-     */
-    static private function fromIterable($iterable)
-    {
-        if ($iterable instanceof \Iterator) {
-            return $iterable;
-        }
-
-        if ($iterable instanceof \Traversable) {
-            return new \IteratorIterator($iterable);
-        }
-
-        if (is_array($iterable) && (count($iterable) !== 2 || !is_callable($iterable))) {
-            return new \ArrayIterator($iterable);
-        }
-
-        if (is_callable($iterable)) {
-            return new Iterator\CallableIterator($iterable);
-        }
-
-        throw new Exception\UnsupportedIterable();
+        $this->iterable = $iterable;
     }
 }
+
